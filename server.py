@@ -50,12 +50,14 @@ def playerThread(conn, addr, playerNum):
     ''' This function deals with a single clients data that the player has sent to the server '''
 
     global labels
+    global currTurn
     
     while(True):
         data = conn.recv(1024).decode()
 
         if not data:
-            break
+            #break
+            pass
 
         if(len(listOfPlayers) > 1):
             #>> The game is currently running
@@ -64,7 +66,7 @@ def playerThread(conn, addr, playerNum):
                 if(validatePos(data, 3, labels)):
                     #>> The players move is valid
                     #>> Make the move (edit the labels list)
-                    labels = playTurn(labels, data, playerNum)
+                    labels = playTurn(labels, int(data), playerNum)
                     print("New Labels: " + str(labels))
                     #>> Move turn onto next player
                     if(currTurn == 1):
@@ -116,7 +118,7 @@ while(True):
         cThread.daemon = True
         cThread.start()
         listOfPlayers.append(conn)
-        print("New connection from: " + str(conn))
+        print("New connection from: " + str(addr))
     else:
         if(currTurn == 0):
             currTurn = 1
