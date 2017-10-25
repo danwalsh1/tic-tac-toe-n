@@ -103,7 +103,8 @@ iThread.start()
 
 while(True):
     pData = sock.recv(1024)
-    if not data:
-        break
-    data = p.load(pData)
+    if not pData:
+        #break
+        pass
+    data = p.loads(pData)
     print(data)
