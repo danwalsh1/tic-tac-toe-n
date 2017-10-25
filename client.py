@@ -13,7 +13,8 @@ import pickle as p
 ### GLOBAL VARIABLES ###
 ########################
 
-playerNum = -1
+sock = s.socket(s.AF_INET, s.SOCK_STREAM)
+playerNum = 0
 currTurn = -1
 
 #################
@@ -78,24 +79,31 @@ def validatePos(pos, size, labels):
     else:
         return False
 
-############
-### GAME ###
-############
-
-sock = s.socket(s.AF_INET, s.SOCK_STREAM)
-sock.connect(('127.0.0.1', 12345))
-
-def sendMessage():
+def sendMove():
     while(True):
         message = input(">>")
         sock.send(message.encode())
 
-iThread = t.Thread(target=sendMessage)
+############
+### GAME ###
+############
+
+######################
+#      SETTINGS      #
+hostIP = '127.0.0.1'
+port = 12345
+#                    #
+######################
+
+sock.connect((hostIP, port))
+
+iThread = t.Thread(target=sendMove)
 iThread.daemon = True
 iThread.start()
 
 while(True):
-    data = sock.recv(1024)
+    pData = sock.recv(1024)
     if not data:
         break
-    print(data.decode())
+    data = p.load(pData)
+    print(data)
