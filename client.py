@@ -84,6 +84,13 @@ def sendMove():
         message = input(">>")
         sock.send(message.encode())
 
+def getBoardFromList(gameList, boardSize = 3):
+    labels = [''] * (boardSize**2)
+    for i in range(0, boardSize**2):
+        labels[i] = gameList[i]
+
+    return labels
+
 ############
 ### GAME ###
 ############
@@ -92,6 +99,7 @@ def sendMove():
 #      SETTINGS      #
 hostIP = '127.0.0.1'
 port = 12345
+boardSize = 3
 #                    #
 ######################
 
@@ -101,10 +109,14 @@ iThread = t.Thread(target=sendMove)
 iThread.daemon = True
 iThread.start()
 
+gameBoardLabels = []*(boardSize**2)
+
 while(True):
     pData = sock.recv(1024)
     if not pData:
-        #break
-        pass
+        break
     data = p.loads(pData)
-    print(data)
+    boardLabels = getBoardFromList(data)
+    if(boardLabels != gameBoardLabels):
+        print(data)
+        gameBoardLabels = boardLabels
