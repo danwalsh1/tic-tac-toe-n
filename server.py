@@ -16,6 +16,11 @@ import time
 
 sock = s.socket(s.AF_INET, s.SOCK_STREAM)
 currTurn = 0
+
+#>> labels[0] to labels[8] = Board places
+#>> labels[9] = current turn
+#>> labels[10] = data sent type
+#>> labels[11] = data sent
 labels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', str(currTurn), 'empty', '']
 
 #################
@@ -55,7 +60,7 @@ def sendGameData(gameData, toWho = "ALL", conn = None):
             connection.send(sendData)
     elif(toWho == "SINGLE"):
         #>> Send the given data to the given connection
-        sendData = p.dumps(gaeData)
+        sendData = p.dumps(gameData)
         conn.send(sendData)
     else:
         #>> Display error message on the server terminal
@@ -197,6 +202,12 @@ def playerThread(conn, addr, playerNum, boardSize):
 
     global labels
     global currTurn
+
+    labels[10] = "playerNum"
+    labels[11] = str(playerNum)
+    sendGameData(labels, "SINGLE", conn)
+    labels[10] = "empty"
+    labels[11] = ""
     
     while(True):
         data = conn.recv(1024).decode()
@@ -253,8 +264,11 @@ def playerThread(conn, addr, playerNum, boardSize):
 
 ######################
 #      SETTINGS      #
+#>> Host's IP Address
 hostIP = '127.0.0.1'
+#>> Port to use for socket
 port = 12345
+#>> Horizontal/vertical size of board
 boardSize = 3
 #                    #
 ######################
@@ -285,7 +299,7 @@ while(True):
                 sendGameData(labels)
                 time.sleep(1)
                 winCount += 1
-                print("Server closing in " + str(winCount) + " second(s)")
+                print("Server closing in " + str(10 - winCount) + " second(s)")
             break
         sendGameData(labels)
         time.sleep(1)

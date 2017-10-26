@@ -142,12 +142,20 @@ while(True):
 
     if(data[10] == "win"):
         if(data[11] == "x"):
-            print("Player 1 has won!")
+            if(playerNum == "1"):
+                print("You have won!")
+            else:
+                print("Player 1 has won!")
         elif(data[11] == "o"):
-            print("Player 2 has won!")
+            if(playerNum == "2"):
+                print("You have won!")
+            else:
+                print("Player 2 has won!")
         else:
             print("ERROR:: Winner not recognised!")
         break
+    elif(data[10] == "playerNum"):
+        playerNum = data[11]
 print("Press any key to end")
 end = False
 while(end == False):
