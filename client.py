@@ -81,11 +81,13 @@ def validatePos(pos, size, labels):
         return False
 
 def sendMove():
+    ''' This function is used to allow the user to enter their move and send it to the server '''
     while(True):
         message = input("")
         sock.send(message.encode())
 
 def getBoardFromList(gameList, boardSize = 3):
+    ''' This function is used to return a list with the game board elements only '''
     labels = [''] * (boardSize**2)
     for i in range(0, boardSize**2):
         labels[i] = gameList[i]
@@ -93,6 +95,7 @@ def getBoardFromList(gameList, boardSize = 3):
     return labels
 
 def clearScreen(userOs, mode):
+    ''' This function is used to clear the terminal '''
     if(mode == "on"):
         if(userOs == "windows"):
             os.system("cls")
@@ -107,9 +110,13 @@ def clearScreen(userOs, mode):
 
 ######################
 #      SETTINGS      #
+#>> Host's IP Address
 hostIP = '127.0.0.1'
+#>> Port to use for socket
 port = 12345
+#>> Horizontal/vertical size of board
 boardSize = 3
+#>> windows/linuxMac
 Os = 'windows'
 #                    #
 ######################
@@ -132,3 +139,17 @@ while(True):
         clearScreen(Os, "on")
         printBoard(boardSize, boardLabels)
         gameBoardLabels = boardLabels
+
+    if(data[10] == "win"):
+        if(data[11] == "x"):
+            print("Player 1 has won!")
+        elif(data[11] == "o"):
+            print("Player 2 has won!")
+        else:
+            print("ERROR:: Winner not recognised!")
+        break
+print("Press any key to end")
+end = False
+while(end == False):
+    uInput = input()
+    end = True
