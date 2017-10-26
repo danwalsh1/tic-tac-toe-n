@@ -208,8 +208,11 @@ def playerThread(conn, addr, playerNum, boardSize):
                 if(validatePos(data, 3, labels)):
                     #>> The players move is valid
                     #>> Make the move (edit the labels list)
+                    extentionList = ['', 'empty', '']
+                    #print(labels)
                     labels = playTurn(labels, int(data), playerNum)
-                    print("New Labels: " + str(labels))
+                    labels.extend(extentionList)
+                    #print(labels)
                     checkBoardWin = checkWin(labels, boardSize)
                     if(checkBoardWin == "-"):
                         #>> Move turn onto next player
@@ -220,12 +223,19 @@ def playerThread(conn, addr, playerNum, boardSize):
                         else:
                             currTurn = 1
                             print("Player 1's turn!")
+                        labels[9] = str(currTurn)
                     elif(checkBoardWin == "X"):
                         print("Player 1 has won!")
+                        labels[10] = "win"
+                        labels[11] = "x"
                     elif(checkBoardWin == "O"):
                         print("Player 2 has won!")
+                        labels[10] = "win"
+                        labels[11] = "o"
                     else:
                         print("ERROR: playerThread >> checkWin() returned:: " + str(checkBoardWin))
+
+                    print("New Labels: " + str(labels))
         else:
             #>> Print to terminal, player data received but ignored
             print("Data recieved from: " + str(addr) + " >> Not enough players >> Data being ignored!")
@@ -246,6 +256,7 @@ sock.bind((hostIP, port))
 sock.listen(1)
 
 listOfPlayers = []
+winCount = 0
         
 while(True):
     if(len(listOfPlayers) < 2):
@@ -258,5 +269,11 @@ while(True):
     else:
         if(currTurn == 0):
             currTurn = 1
+        if(labels[10] == "win"):
+            while(winCount < 10):
+                sendGameData(labels)
+                time.sleep(1)
+                winCount += 1
+            break
         sendGameData(labels)
         time.sleep(1)
