@@ -56,8 +56,7 @@ def playerThread(conn, addr, playerNum):
         data = conn.recv(1024).decode()
 
         if not data:
-            #break
-            pass
+            break
 
         if(len(listOfPlayers) > 1):
             #>> The game is currently running
@@ -114,7 +113,7 @@ listOfPlayers = []
 while(True):
     if(len(listOfPlayers) < 2):
         conn, addr = sock.accept()
-        cThread = t.Thread(target=playerThread, args=(conn, addr, len(listOfPlayers)))
+        cThread = t.Thread(target=playerThread, args=(conn, addr, len(listOfPlayers)+1))
         cThread.daemon = True
         cThread.start()
         listOfPlayers.append(conn)
