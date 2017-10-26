@@ -53,7 +53,6 @@ def sendGameData(gameData, toWho = "ALL", conn = None):
         for connection in listOfPlayers:
             sendData = p.dumps(gameData)
             connection.send(sendData)
-            print("Data sent to all players!")
     elif(toWho == "SINGLE"):
         #>> Send the given data to the given connection
         sendData = p.dumps(gaeData)
@@ -63,6 +62,7 @@ def sendGameData(gameData, toWho = "ALL", conn = None):
         print("ERROR: [sendGameData] :: Invalid string given for toWho")
 
 def checkHor(labels, size):
+    ''' The function checks for either player win along all horizontal options '''
     #>> Check rows for wins
 
     #>> Check for X win
@@ -99,6 +99,7 @@ def checkHor(labels, size):
     return "-"
 
 def checkVer(labels, size):
+    ''' The function checks for either player win along all vertical options '''
     #>> Check columns for wins
 
     #>> Check for X win
@@ -134,6 +135,7 @@ def checkVer(labels, size):
     return "-"
 
 def checkDia(labels, size):
+    ''' The function checks for either player win along all diagonal options '''
     #>> Check diagonals for wins
 
     #>> Top left to bottom right
@@ -179,6 +181,7 @@ def checkDia(labels, size):
     return "-"
 
 def checkWin(labels, size):
+    ''' The function uses other function to check for either player win along all options '''
     check = False
     check = checkHor(labels, size)
     if(check == "X" or check == "O"):
@@ -208,10 +211,10 @@ def playerThread(conn, addr, playerNum, boardSize):
                 if(validatePos(data, 3, labels)):
                     #>> The players move is valid
                     #>> Make the move (edit the labels list)
-                    extentionList = ['', 'empty', '']
+                    #extentionList = ['', 'empty', '']
                     #print(labels)
                     labels = playTurn(labels, int(data), playerNum)
-                    labels.extend(extentionList)
+                    #labels.extend(extentionList)
                     #print(labels)
                     checkBoardWin = checkWin(labels, boardSize)
                     if(checkBoardWin == "-"):
@@ -236,6 +239,10 @@ def playerThread(conn, addr, playerNum, boardSize):
                         print("ERROR: playerThread >> checkWin() returned:: " + str(checkBoardWin))
 
                     print("New Labels: " + str(labels))
+                else:
+                    print("Player " + str(playerNum) + " played invalid move! Ignoring:: " + data)
+            else:
+                print("Player " + str(playerNum) + " played out of turn! Ignoring:: " + data)
         else:
             #>> Print to terminal, player data received but ignored
             print("Data recieved from: " + str(addr) + " >> Not enough players >> Data being ignored!")
@@ -252,8 +259,12 @@ boardSize = 3
 #                    #
 ######################
 
+print("Server starting...")
+
 sock.bind((hostIP, port))
 sock.listen(1)
+
+print("Waiting for connections")
 
 listOfPlayers = []
 winCount = 0
@@ -274,6 +285,7 @@ while(True):
                 sendGameData(labels)
                 time.sleep(1)
                 winCount += 1
+                print("Server closing in " + str(winCount) + " second(s)")
             break
         sendGameData(labels)
         time.sleep(1)
