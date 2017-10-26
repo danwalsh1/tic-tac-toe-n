@@ -185,6 +185,15 @@ def checkDia(labels, size):
     
     return "-"
 
+def checkEnd(labels, size):
+    ''' This function is used to check if the game has ended in a draw '''
+    count = 0
+    while(count < size**2):
+        if(labels[count] != "X" and labels[count] != "O"):
+            return "-"
+        count += 1
+    return "DRAW"
+
 def checkWin(labels, size):
     ''' The function uses other function to check for either player win along all options '''
     check = False
@@ -195,6 +204,10 @@ def checkWin(labels, size):
     if(check == "X" or check == "O"):
         return check
     check = checkDia(labels, size)
+
+    check2 = checkEnd(labels, size)
+    if(check2 == "DRAW"):
+        return check2
     return check
 
 def playerThread(conn, addr, playerNum, boardSize):
@@ -246,6 +259,10 @@ def playerThread(conn, addr, playerNum, boardSize):
                         print("Player 2 has won!")
                         labels[10] = "win"
                         labels[11] = "o"
+                    elif(checkBoardWin == "DRAW"):
+                        print("Game has ended in a draw!")
+                        labels[10] = "win"
+                        labels[11] = "DRAW"
                     else:
                         print("ERROR: playerThread >> checkWin() returned:: " + str(checkBoardWin))
 
