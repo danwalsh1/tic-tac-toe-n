@@ -151,6 +151,8 @@ while(True):
                 print("You have won!")
             else:
                 print("Player 2 has won!")
+        elif(data[11] == "DRAW"):
+            print("The game has ended in a draw!")
         else:
             print("ERROR:: Winner not recognised!")
         break
