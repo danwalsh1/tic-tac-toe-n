@@ -8,6 +8,7 @@
 import socket as s
 import threading as t
 import pickle as p
+import os
 
 ########################
 ### GLOBAL VARIABLES ###
@@ -81,7 +82,7 @@ def validatePos(pos, size, labels):
 
 def sendMove():
     while(True):
-        message = input(">>")
+        message = input("")
         sock.send(message.encode())
 
 def getBoardFromList(gameList, boardSize = 3):
@@ -90,6 +91,15 @@ def getBoardFromList(gameList, boardSize = 3):
         labels[i] = gameList[i]
 
     return labels
+
+def clearScreen(userOs, mode):
+    if(mode == "on"):
+        if(userOs == "windows"):
+            os.system("cls")
+        elif(userOs == "linuxMac"):
+            os.system("clear")
+        else:
+            print("Invalid OS!")
 
 ############
 ### GAME ###
@@ -100,6 +110,7 @@ def getBoardFromList(gameList, boardSize = 3):
 hostIP = '127.0.0.1'
 port = 12345
 boardSize = 3
+Os = 'windows'
 #                    #
 ######################
 
@@ -118,5 +129,6 @@ while(True):
     data = p.loads(pData)
     boardLabels = getBoardFromList(data)
     if(boardLabels != gameBoardLabels):
-        print(data)
+        clearScreen(Os, "on")
+        printBoard(boardSize, boardLabels)
         gameBoardLabels = boardLabels
