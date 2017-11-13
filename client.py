@@ -70,23 +70,6 @@ def printBoard(boardSize, labels):
 
         count += 1
 
-def validatePos(pos, size, labels):
-    ''' Checks whether the given position is a valid position within the given list '''
-    if(pos.isdigit()):
-        #The string is a valid digit
-        pos = int(pos)
-        if(pos >= 0 and pos < size**2):
-            #>> The given integer is in the valid range
-            if(labels[pos] != "X" and labels[pos] != "O"):
-                #>> The space hasn't already been taken by a player
-                return True
-            else:
-                return False
-        else:
-            return False
-    else:
-        return False
-
 def sendMove():
     ''' This function is used to allow the user to enter their move and send it to the server '''
     while(True):
